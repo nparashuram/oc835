@@ -33,7 +33,7 @@ router.post("/:cam", (req, res, next) => {
   req.on("end", () => {
     logger.info("Finished writing video data to ", filename);
     wstream.end();
-    res.end("ok");
+    res.send("ok");
     next();
   });
   req.on("error", function (err) {
