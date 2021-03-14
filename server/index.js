@@ -3,6 +3,8 @@ const fs = require("fs");
 
 const express = require("express");
 const winston = require("winston");
+const serveIndex = require("serve-index");
+
 const expressWinston = require("express-winston");
 
 const PORT = 8080;
@@ -31,6 +33,8 @@ app.use(
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api", apiHandler);
 app.use("/upload", uploadHandler);
+app.use("/videos", serveIndex(config.get().dataDir, { icons: true }));
+app.use("/videos", express.static(config.get().dataDir));
 
 app.get("/", (_, res, next) => {
   res.redirect("/index.html");
