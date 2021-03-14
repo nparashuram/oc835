@@ -39,7 +39,6 @@ router.post("/:cam", (req, res, next) => {
   req.on("error", function (err) {
     logger.error("Error during HTTP upload", err);
   });
-  next();
 });
 
 module.exports = router;
