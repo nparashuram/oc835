@@ -17,16 +17,16 @@ const app = express();
 
 app.use(
   expressWinston.logger({
-    transports: [
-      new winston.transports.Console(),
-      new winston.transports.File({
-        filename: path.join(config.get().logDir, "http.log"),
-      }),
-    ],
-    format: winston.format.combine(winston.format.json()),
+    transports: [new winston.transports.Console()],
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.printf((i) => `${i.timestamp} | ${i.message}`)
+    ),
     meta: true,
     msg: "HTTP {{req.method}} {{req.url}}",
+    colorize: true,
     expressFormat: true,
+    statusLevels: true,
   })
 );
 
