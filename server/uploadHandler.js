@@ -7,7 +7,10 @@ const winston = require("winston");
 const config = require("./config");
 const logger = winston.createLogger({
   level: "debug",
-  format: winston.format.json(),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf((i) => `${i.timestamp} | ${i.message}`)
+  ),
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
@@ -25,13 +28,13 @@ const router = express.Router({ strict: "false" });
 router.post("/:cam", (req, res, next) => {
   const filename = path.join(
     config.get().dataDir,
-    `${req.params.cam || "camera-unknown"}-${new Date().getTime()}.avi`
+    `${req.params.cam || "camera-unknown"}-${new Date().getTime()}.mp4`
   );
-  logger.log("Uploading video to ", filename);
+  logger.debug("Uploading video to " + filename);
   var wstream = fs.createWriteStream(filename);
   req.on("data", (chunk) => wstream.write(chunk));
   req.on("end", () => {
-    logger.info("Finished writing video data to ", filename);
+    logger.info("Finished writing video data to " + filename);
     wstream.end();
     res.send("ok");
     next();
