@@ -25,7 +25,7 @@ const logger = winston.createLogger({
 
 const getTime = () => {
   const ts = new Date();
-  return `${ts.getFullYear()}-${ts.getMonth()}-${ts.getDate()}:${ts.getHours()}-${ts.getMinutes()}-${ts.getSeconds()}`;
+  return `${ts.getFullYear()}-${ts.getMonth()}-${ts.getDate()}-${ts.getHours()}-${ts.getMinutes()}-${ts.getSeconds()}`;
 };
 
 const router = express.Router({ strict: "false" });
