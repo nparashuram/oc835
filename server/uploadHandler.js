@@ -23,12 +23,17 @@ const logger = winston.createLogger({
   ],
 });
 
+const getTime = () => {
+  const ts = new Date();
+  return `${ts.getFullYear()}-${ts.getMonth()}-${ts.getDate()}:${ts.getHours()}:${ts.getMinutes()}:${ts.getSeconds()}`;
+};
+
 const router = express.Router({ strict: "false" });
 
 router.post("/:cam", (req, res, next) => {
   const filename = path.join(
     config.get().dataDir,
-    `${req.params.cam || "camera-unknown"}-${new Date().getTime()}.mp4`
+    `${req.params.cam || "camera-unknown"}-${getTime()}.mp4`
   );
   logger.debug("Uploading video to " + filename);
   var wstream = fs.createWriteStream(filename);
