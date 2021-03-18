@@ -24,8 +24,18 @@ const logger = winston.createLogger({
 });
 
 const getTime = () => {
-  const ts = new Date();
-  return `${ts.getFullYear()}-${ts.getMonth()}-${ts.getDate()}-${ts.getHours()}-${ts.getMinutes()}-${ts.getSeconds()}`;
+  const ts = new Intl.DateTimeFormat("en-us", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  })
+    .formatToParts(new Date())
+    .reduce((acc, i) => ({ ...acc, [i.type]: i.value }), {});
+  return `${ts.year}-${ts.month}-${ts.day}__${ts.hour}-${ts.minute}-${ts.second}`;
 };
 
 const router = express.Router({ strict: "false" });
