@@ -33,8 +33,10 @@ app.use(
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api", apiHandler);
 app.use("/upload", uploadHandler);
-app.use("/videos", serveIndex(config.get().dataDir, { icons: true }));
-app.use("/videos", express.static(config.get().dataDir));
+app.use("/raw/videos", serveIndex(config.get().dataDir, { icons: true }));
+app.use("/raw/videos", express.static(config.get().dataDir));
+app.use("/raw/logs", serveIndex(config.get().logDir, { icons: true }));
+app.use("/raw/logs", express.static(config.get().logDir));
 
 app.get("/", (_, res, next) => {
   res.redirect("/index.html");
