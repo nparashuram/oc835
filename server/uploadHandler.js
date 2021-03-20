@@ -4,6 +4,8 @@ const fs = require("fs");
 const express = require("express");
 const winston = require("winston");
 
+const { getFilenameFromTime } = require("./timeFilename");
+
 const config = require("./config");
 const logger = winston.createLogger({
   level: "debug",
@@ -23,27 +25,12 @@ const logger = winston.createLogger({
   ],
 });
 
-const getTime = () => {
-  const ts = new Intl.DateTimeFormat("en-us", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  })
-    .formatToParts(new Date())
-    .reduce((acc, i) => ({ ...acc, [i.type]: i.value }), {});
-  return `${ts.year}-${ts.month}-${ts.day}__${ts.hour}-${ts.minute}-${ts.second}`;
-};
-
 const router = express.Router({ strict: "false" });
 
 router.post("/:cam", (req, res, next) => {
   const filename = path.join(
     config.get().dataDir,
-    `${req.params.cam || "camera-unknown"}-${getTime()}.mp4`
+    getFilenameFromTime(req.params.cam, new Date())
   );
   logger.debug("Uploading video to " + filename);
   var wstream = fs.createWriteStream(filename);
