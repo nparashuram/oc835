@@ -11,10 +11,9 @@
     <link rel="me" href="http://nparashuram.com" />
     <link rel="canonical" href="http://nparashuram.com" />
     <meta name="theme-color" content="#fff" />
-    <link href="/vendor/bootstrap.min.css" rel="stylesheet" />
     <link href="main.css" rel="stylesheet" />
     <style>
-      .videos h2.camera-name {
+      .videos h3.camera-name {
         margin-bottom: 0;
         padding: 15px 10px;
         background-color: #abcdef;
@@ -23,19 +22,21 @@
 
       .videos .camera-container {
         margin: 0 0 10px 0;
-        padding: 10px;
+        flex-wrap: wrap;
         background-color: #abcdef;
+        display: flex;
+        justify-content: flex-start;
+        padding: 6px;
       }
 
       .videos div.videoItem {
         padding: 0;
-        margin: 0 10px 5px 0;
+        margin: 3px 3px;
         list-style: none;
         border: SOLID 1px #222;
         background-color: #eee;
         border-radius: 4px;
         cursor: pointer;
-        display: inline-block;
       }
       .videos .videoItem a:hover {
         background-color: #333;
@@ -48,11 +49,21 @@
         font-weight: 800;
         text-decoration: none;
         display: block;
-        padding: 15px;
+        padding: 10px;
       }
       .videos .separator {
         display: block;
-        margin: 20px;
+        width: 100%;
+        height: 20px;
+      }
+
+      .videos .delete-cam-date {
+        display: inline-block;
+        font-size: 1.5em;
+        border: SOLID 2px lightcoral;
+        padding: 8px;
+        border-radius: 4px;
+        cursor: pointer;
       }
     </style>
     <title>OC835 - Cameras</title>
@@ -69,8 +80,42 @@
       const getFormattedTime = (d) =>
         `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
 
+      const deleteVideos = (videos) => {
+        if (
+          confirm(`Are you sure you want to delete ${videos.length} videos ? `)
+        ) {
+          console.log(`Deleting ${videos.length} videos `, videos);
+          fetch("/api/videos/delete", {
+            method: "POST",
+            body: JSON.stringify(videos),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
+              alert(
+                `Deleted ${data.fulfilled.length} videos. ` +
+                  (data.rejected.length
+                    ? `Could not delete ${data.rejected.length} videos`
+                    : "")
+              );
+              window.location.reload();
+            })
+            .catch((e) => {
+              console.log("Error deleting videos ", e);
+            });
+        }
+      };
+
       (async function (window) {
-        const response = await fetch("/api/videos");
+        const response = await fetch("/api/videos", {
+          headers: {
+            pragma: "no-cache",
+            "cache-control": "no-cache",
+          },
+        });
         const videos = (await response.json()).reduce(
           (acc = {}, { camera, time, file }) => {
             if (camera && time && file) {
@@ -95,12 +140,21 @@
         );
         console.log(videos);
 
-        const html = [];
+        const html =
+          Object.keys({}).length === 0 ? ["<h1>No Videos recorded</h1>"] : [];
         for (const date in videos) {
-          html.push(`<h1>${date}</h1>`);
+          html.push(`<h2>${date}</h2>`);
           for (const cam in videos[date]) {
             html.push(
-              `<div ><h2 class='camera-name'>${cam} (${date})</h2></div>`
+              `<div ><h3 class='camera-name'>${cam} (${date})</h3> <div class='delete-cam-date' onclick='deleteVideos(${JSON.stringify(
+                Object.keys(videos[date][cam]).reduce(
+                  (acc, cur) => [
+                    ...acc,
+                    ...videos[date][cam][cur].map(({ file }) => file),
+                  ],
+                  []
+                )
+              )})'>🗑️</div></div>`
             );
             html.push('<div class="camera-container">');
             for (const hour in videos[date][cam]) {

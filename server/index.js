@@ -6,6 +6,7 @@ const winston = require("winston");
 const serveIndex = require("serve-index");
 
 const expressWinston = require("express-winston");
+const bodyParser = require("body-parser");
 
 const PORT = 8080;
 
@@ -14,6 +15,7 @@ const config = require("./config");
 const uploadHandler = require("./uploadHandler");
 
 const app = express();
+app.use(bodyParser.json());
 
 app.use(
   expressWinston.logger({
