@@ -20,16 +20,23 @@
         display: inline-block;
       }
 
-      .videos .camera-container {
+      .videos .camera-video-container {
         margin: 0 0 10px 0;
         flex-wrap: wrap;
+        flex-direction: column;
         background-color: #abcdef;
         display: flex;
         justify-content: flex-start;
         padding: 6px;
       }
 
-      .videos div.videoItem {
+      .videos .hour-container {
+        margin: 10px 0;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+
+      .videos div.video-item {
         padding: 0;
         margin: 3px 3px;
         list-style: none;
@@ -37,13 +44,15 @@
         background-color: #eee;
         border-radius: 4px;
         cursor: pointer;
+        display: inline-block;
       }
+
       .videos .videoItem a:hover {
         background-color: #333;
         color: #ccc;
       }
 
-      .videos .videoItem a {
+      .videos .video-item a {
         font-family: "Courier New", Courier, monospace;
         font-size: 1.2em;
         font-weight: 800;
@@ -51,17 +60,12 @@
         display: block;
         padding: 10px;
       }
-      .videos .separator {
-        display: block;
-        width: 100%;
-        height: 20px;
-      }
 
       .videos .delete-cam-date {
         display: inline-block;
-        font-size: 1.5em;
+        font-size: 1em;
         border: SOLID 2px lightcoral;
-        padding: 8px;
+        padding: 4px 3px 4px 7px;
         border-radius: 4px;
         cursor: pointer;
       }
@@ -69,18 +73,21 @@
     <title>OC835 - Cameras</title>
   </head>
   <body>
-    <div id="root" class="root videos">
+    <div id="videoContainer" class="root videos">
       <div class="lds-ripple">
         <div></div>
         <div></div>
       </div>
     </div>
     <script type="text/javascript">
-      const pad2 = (num) => ("0" + num).slice(-2);
-      const getFormattedTime = (d) =>
-        `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
+      function getFormattedTime(d) {
+        const pad2 = (num) => ("0" + num).slice(-2);
+        return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(
+          d.getSeconds()
+        )}`;
+      }
 
-      const deleteVideos = (videos) => {
+      function deleteVideos(videos) {
         if (
           confirm(`Are you sure you want to delete ${videos.length} videos ? `)
         ) {
@@ -107,76 +114,77 @@
               console.log("Error deleting videos ", e);
             });
         }
-      };
+      }
 
-      (async function (window) {
-        const response = await fetch("/api/videos", {
-          headers: {
-            pragma: "no-cache",
-            "cache-control": "no-cache",
-          },
-        });
-        const videos = (await response.json()).reduce(
-          (acc = {}, { camera, time, file }) => {
-            if (camera && time && file) {
-              const date = new Date(time);
-              if (acc[date.toDateString()] == null) {
-                acc[date.toDateString()] = {};
+      const fetchVideos = () =>
+        fetch("/api/videos", {
+          headers: { pragma: "no-cache", "cache-control": "no-cache" },
+        })
+          .then((response) => response.json())
+          .then((videos) =>
+            videos.reduce((acc, { camera: cam, time: timeStr, file }, idx) => {
+              if (cam && timeStr && file) {
+                const time = new Date(timeStr),
+                  day = time.toDateString(),
+                  hr = time.getHours();
+
+                acc[day] == null && (acc[day] = {});
+                acc[day][cam] == null && (acc[day][cam] = {});
+                acc[day][cam][hr] == null && (acc[day][cam][hr] = []);
+
+                acc[day][cam][hr].push({ time, file });
               }
-              if (acc[date.toDateString()][camera] == null) {
-                acc[date.toDateString()][camera] = {};
-              }
-              if (acc[date.toDateString()][camera][date.getHours()] == null) {
-                acc[date.toDateString()][camera][date.getHours()] = [];
-              }
-              acc[date.toDateString()][camera][date.getHours()].push({
-                time: new Date(time),
-                file,
-              });
-            }
-            return acc;
-          },
-          {}
-        );
+              return acc;
+            }, {})
+          );
+
+      const renderHours = (hours) => `
+        <div class = "hour-container">
+          ${hours
+            .map(
+              ({ file, time }) => `
+              <div class="video-item">
+                <a href="/raw/videos/${file}" title="${file}">
+                  ${getFormattedTime(time)}
+                </a>
+              </div>`
+            )
+            .join("")}
+        </div>`;
+
+      const renderCamForDate = ([camera, hours]) => `
+        <div>
+          <h3 class='camera-name'>${camera}</h3>
+          <div class='delete-cam-date' 
+            onclick='deleteVideos(${JSON.stringify(
+              Object.values(hours).reduce(
+                (acc, cur) => [...acc, ...cur.map(({ file }) => file)],
+                []
+              )
+            )})
+          '>
+            🗑️
+          </div>
+          <div class='camera-video-container'>
+          ${Object.values(hours).map(renderHours).join("")}
+        </div>
+      `;
+
+      const renderDate = ([date, cameras]) => `
+        <div>
+            <h2>${date}</h2>
+            ${Object.entries(cameras).map(renderCamForDate).join("")}
+        </div>
+      `;
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const videos = await fetchVideos();
         console.log(videos);
-
-        const html =
-          Object.keys({}).length === 0 ? ["<h1>No Videos recorded</h1>"] : [];
-        for (const date in videos) {
-          html.push(`<h2>${date}</h2>`);
-          for (const cam in videos[date]) {
-            html.push(
-              `<div ><h3 class='camera-name'>${cam} (${date})</h3> <div class='delete-cam-date' onclick='deleteVideos(${JSON.stringify(
-                Object.keys(videos[date][cam]).reduce(
-                  (acc, cur) => [
-                    ...acc,
-                    ...videos[date][cam][cur].map(({ file }) => file),
-                  ],
-                  []
-                )
-              )})'>🗑️</div></div>`
-            );
-            html.push('<div class="camera-container">');
-            for (const hour in videos[date][cam]) {
-              html.push(
-                videos[date][cam][hour]
-                  .map(
-                    ({ time, file }) =>
-                      `<div class="videoItem"><a href = '/raw/videos/${file}'>${getFormattedTime(
-                        time
-                      )}</a></div>`
-                  )
-                  .join("")
-              );
-              html.push("<div class='separator'></div>");
-            }
-            html.push("</div>");
-          }
-          html.push("<hr/>");
-        }
-
-        document.getElementById("root").innerHTML = html.join("");
-      })(window);
+        document.getElementById("videoContainer").innerHTML =
+          Object.keys(videos).length === 0
+            ? "<h1>No Videos recorded</h1>"
+            : Object.entries(videos).map(renderDate).join("");
+      });
     </script>
   </body>
 </html>
