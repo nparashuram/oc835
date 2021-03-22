@@ -111,6 +111,7 @@
       </div>
       <div class="video-container">
         <video
+          playsinline
           autoplay="false"
           controls
           disablePictureInPicture
@@ -205,6 +206,8 @@
           videos[currentIndex]
         );
         if (!camera || !time) {
+          alert("No videos found");
+          document.location.href = "/videos";
         } else {
           videoEl.setAttribute("src", `/raw/videos/${file}`);
           document.location.hash = file;
