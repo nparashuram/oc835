@@ -79,14 +79,8 @@
         <div></div>
       </div>
     </div>
+    <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript">
-      function getFormattedTime(d) {
-        const pad2 = (num) => ("0" + num).slice(-2);
-        return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(
-          d.getSeconds()
-        )}`;
-      }
-
       function deleteVideos(videos) {
         if (
           confirm(`Are you sure you want to delete ${videos.length} videos ? `)
@@ -144,7 +138,7 @@
             .map(
               ({ file, time }) => `
               <div class="video-item">
-                <a href="/raw/videos/${file}" title="${file}">
+                <a href="/video.html#${file}" title="${file}">
                   ${getFormattedTime(time)}
                 </a>
               </div>`

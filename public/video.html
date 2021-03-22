@@ -1,0 +1,244 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="MSSmartTagsPreventParsing" content="true" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="apple-touch-icon" href="/favicon.ico" />
+    <link rel="image/vnd.microsoft.icon" rel="icon" href="/favicon.ico" />
+    <link rel="me" href="http://nparashuram.com" />
+    <link rel="canonical" href="http://nparashuram.com" />
+    <meta name="theme-color" content="#fff" />
+    <link href="main.css" rel="stylesheet" />
+    <style>
+      .root {
+        padding: 0;
+      }
+
+      #video {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      .video-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin: 4px;
+      }
+
+      .toolbar button {
+        cursor: pointer;
+        font-size: 2em;
+        margin: 0 4px;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+      }
+
+      .toolbar #playbackRate {
+        font-size: 1.5em;
+      }
+
+      .toolbar .sub-toolbar {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px;
+        z-index: 100;
+      }
+
+      .title h4 {
+        margin: 0;
+        padding: 0;
+      }
+      .title a {
+        text-decoration: none;
+      }
+
+      @media screen and (orientation: portrait) {
+        .video-container {
+          width: 100%;
+        }
+      }
+      @media screen and (orientation: landscape) {
+        .video-container {
+          height: 100%;
+        }
+        .title {
+          position: absolute;
+          left: 0;
+          right: 0;
+          margin-top: 0;
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .toolbar {
+          position: absolute;
+          top: 20;
+          right: 0;
+          flex-direction: column;
+          height: 90%;
+        }
+        .toolbar .sub-toolbar {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="root">
+      <div class="title">
+        <h4><a href="/videos">❌</a></h4>
+        <h4 id="timeTitle"></h4>
+        <h4 id="cameraTitle"></h4>
+      </div>
+      <div class="video-container">
+        <video
+          autoplay="false"
+          controls
+          disablePictureInPicture
+          id="video"
+        ></video>
+      </div>
+      <div class="toolbar">
+        <div class="sub-toolbar">
+          <button data-action="prevVideo">⏮️</button>
+          <button data-action="nextVideo">⏭️</button>
+        </div>
+        <div class="sub-toolbar">
+          <button><a id="downloadBtn" href="#" download>💾</a></button>
+          <button data-action="deleteVideo">🗑️</button>
+          <button data-action=""></button>
+        </div>
+        <div class="sub-toolbar">
+          <button data-action="slow">⏪</button>
+          <div id="playbackRate"></div>
+          <button data-action="fast">⏩</button>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript">
+      const fetchVideos = (camera, day) =>
+        fetch("/api/videos", {
+          headers: { pragma: "no-cache", "cache-control": "no-cache" },
+        })
+          .then((response) => response.json())
+          .then((videos) =>
+            videos
+              .filter(
+                (video) =>
+                  video.camera === camera &&
+                  new Date(video.time).toDateString() === day
+              )
+              .sort((a, b) => a.time < b.time)
+              .map(({ file }) => file)
+          );
+
+      const videoEl = document.getElementById("video");
+
+      let currentIndex = 0,
+        videos = [],
+        playbackRate = videoEl.playbackRate;
+
+      const actions = {
+        slow() {
+          playbackRate /= 2;
+          setPlaybackRate();
+        },
+        fast() {
+          playbackRate *= 2;
+          setPlaybackRate();
+        },
+        deleteVideo() {
+          fetch("/api/videos/delete", {
+            method: "POST",
+            body: JSON.stringify([videos[currentIndex]]),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              videos.splice(currentIndex, 1);
+              setVideo();
+            });
+        },
+        prevVideo() {
+          currentIndex--;
+          setVideo();
+        },
+        nextVideo() {
+          currentIndex++;
+          setVideo();
+        },
+      };
+
+      function setPlaybackRate() {
+        playbackRate > 8 && (playbackRate = 8);
+        playbackRate < 0.25 && (playbackRate = 0.25);
+        document.getElementById("playbackRate").innerHTML = `x${playbackRate}`;
+        videoEl.playbackRate = playbackRate;
+      }
+
+      function setVideo() {
+        currentIndex < 0 && (currentIndex = 0);
+        currentIndex >= videos.length && (currentIndex = videos.length - 1);
+        const { camera, time, file } = getTimeFromFilename(
+          videos[currentIndex]
+        );
+        if (!camera || !time) {
+        } else {
+          videoEl.setAttribute("src", `/raw/videos/${file}`);
+          document.location.hash = file;
+          const date = new Date(time);
+          document.getElementById("cameraTitle").innerHTML = camera;
+          document.getElementById(
+            "timeTitle"
+          ).innerHTML = `${date.toDateString()}, ${getFormattedTime(date)}`;
+          document
+            .getElementById("downloadBtn")
+            .setAttribute("href", `/raw/videos/${file}`);
+          setPlaybackRate();
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const file = document.location.hash.substring(1);
+        const { camera, time } = getTimeFromFilename(file);
+
+        videos = await fetchVideos(camera, new Date(time).toDateString());
+        currentIndex = videos.findIndex((video) => video === file);
+
+        setPlaybackRate();
+        setVideo();
+      });
+
+      document.addEventListener("click", async (e) => {
+        if (
+          e.target.dataset.action &&
+          typeof actions[e.target.dataset.action] === "function"
+        ) {
+          actions[e.target.dataset.action](e.target.dataset.args);
+        }
+      });
+    </script>
+  </body>
+</html>
