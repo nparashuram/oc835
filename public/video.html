@@ -170,11 +170,12 @@
           setPlaybackRate();
         },
         deleteVideo() {
+          const fileToDelete = videos[currentIndex];
           videos.splice(currentIndex, 1);
           setVideo();
           fetch("/api/videos/delete", {
             method: "POST",
-            body: JSON.stringify([videos[currentIndex]]),
+            body: JSON.stringify([fileToDelete]),
             headers: {
               "Content-Type": "application/json",
             },
