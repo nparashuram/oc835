@@ -39,9 +39,11 @@ router.post("/videos/delete", async (req, res, next) => {
         }
       );
       res.json(result);
+      next();
     });
   } else {
     res.status(500).send("List of files should be an array");
+    next();
   }
 });
 
