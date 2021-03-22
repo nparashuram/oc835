@@ -111,6 +111,7 @@
       </div>
       <div class="video-container">
         <video
+          preload
           playsinline
           autoplay="false"
           controls
@@ -149,7 +150,7 @@
                   video.camera === camera &&
                   new Date(video.time).toDateString() === day
               )
-              .sort((a, b) => a.time < b.time)
+              .sort((a, b) => a.time >= b.time)
               .map(({ file }) => file)
           );
 
