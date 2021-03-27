@@ -121,8 +121,8 @@
       </div>
       <div class="toolbar">
         <div class="sub-toolbar">
-          <button data-action="prevVideo">⏮️</button>
-          <button data-action="nextVideo">⏭️</button>
+          <button data-action="prevVideo" class="prev-video">⏮️</button>
+          <button data-action="nextVideo" class="next-video">⏭️</button>
         </div>
         <div class="sub-toolbar">
           <button><a id="downloadBtn" href="#" download>💾</a></button>
@@ -155,6 +155,9 @@
           );
 
       const videoEl = document.getElementById("video");
+      video.addEventListener("ended", () => {
+        (currentIndex < video.length) - 1 && actions.nextVideo();
+      });
 
       let currentIndex = 0,
         videos = [],
@@ -201,6 +204,15 @@
       function setVideo() {
         currentIndex < 0 && (currentIndex = 0);
         currentIndex >= videos.length && (currentIndex = videos.length - 1);
+
+        if (currentIndex === 0) {
+          document.getElementsByClassName("prev-video")[0].disabled = true;
+        }
+
+        if (currentIndex === video.length - 1) {
+          document.getElementsByClassName("next-video")[0].disabled = true;
+        }
+
         const { camera, time, file } = getTimeFromFilename(
           videos[currentIndex]
         );
