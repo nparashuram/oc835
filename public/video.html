@@ -205,13 +205,11 @@
         currentIndex < 0 && (currentIndex = 0);
         currentIndex >= videos.length && (currentIndex = videos.length - 1);
 
-        if (currentIndex === 0) {
-          document.getElementsByClassName("prev-video")[0].disabled = true;
-        }
+        document.getElementsByClassName("prev-video")[0].disabled =
+          currentIndex === 0;
 
-        if (currentIndex === videos.length - 1) {
-          document.getElementsByClassName("next-video")[0].disabled = true;
-        }
+        document.getElementsByClassName("next-video")[0].disabled =
+          currentIndex === videos.length - 1;
 
         const { camera, time, file } = getTimeFromFilename(
           videos[currentIndex]
