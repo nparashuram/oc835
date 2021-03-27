@@ -219,9 +219,9 @@
           document.location.href = "/videos";
         } else {
           videoEl.setAttribute("src", `/raw/videos/${file}`);
-          document.location.hash = file;
-          document.camera = date.toTimeString();
           const date = new Date(time);
+          document.camera = date.toTimeString();
+          document.location.hash = file;
           document.getElementById("cameraTitle").innerHTML = camera;
           document.getElementById(
             "timeTitle"
