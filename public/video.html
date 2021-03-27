@@ -220,7 +220,7 @@
         } else {
           videoEl.setAttribute("src", `/raw/videos/${file}`);
           const date = new Date(time);
-          document.camera = date.toTimeString();
+          document.title = date.toTimeString();
           document.location.hash = file;
           document.getElementById("cameraTitle").innerHTML = camera;
           document.getElementById(
