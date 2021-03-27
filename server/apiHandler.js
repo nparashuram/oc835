@@ -1,8 +1,6 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
-const util = require("util");
-const http = require("http");
 
 const router = express.Router({ strict: "false" });
 
@@ -20,27 +18,14 @@ router.get("/cameras", (req, res, next) => {
   }
 });
 
-const unlink = util.promisify(fs.unlink);
-
 router.post("/videos/delete", async (req, res, next) => {
   const files = req.body;
   if (Array.isArray(files)) {
-    Promise.allSettled(
-      files.map((file) => unlink(path.resolve(config.get().dataDir, file)))
-    ).then((values) => {
-      const result = values.reduce(
-        (acc, cur, i) => ({
-          ...acc,
-          [cur.status]: [...acc[cur.status], files[i]],
-        }),
-        {
-          rejected: [],
-          fulfilled: [],
-        }
-      );
-      res.json(result);
-      next();
-    });
+    files.forEach((file) =>
+      fs.unlinkSync(path.resolve(config.get().dataDir, file))
+    );
+    res.status(200).send({ deleted: files.length });
+    next();
   } else {
     res.status(500).send("List of files should be an array");
     next();

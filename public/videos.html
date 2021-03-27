@@ -96,12 +96,7 @@
             .then((res) => res.json())
             .then((data) => {
               console.log(data);
-              alert(
-                `Deleted ${data.fulfilled.length} videos. ` +
-                  (data.rejected.length
-                    ? `Could not delete ${data.rejected.length} videos`
-                    : "")
-              );
+              alert(`Deleted ${data.deleted.length} videos. `);
               window.location.reload();
             })
             .catch((e) => {
