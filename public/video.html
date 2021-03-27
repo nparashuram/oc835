@@ -156,7 +156,7 @@
 
       const videoEl = document.getElementById("video");
       video.addEventListener("ended", () => {
-        (currentIndex < video.length) - 1 && actions.nextVideo();
+        currentIndex < videos.length - 1 && actions.nextVideo();
       });
 
       let currentIndex = 0,
@@ -209,7 +209,7 @@
           document.getElementsByClassName("prev-video")[0].disabled = true;
         }
 
-        if (currentIndex === video.length - 1) {
+        if (currentIndex === videos.length - 1) {
           document.getElementsByClassName("next-video")[0].disabled = true;
         }
 
