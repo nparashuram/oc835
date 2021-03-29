@@ -37,7 +37,7 @@
 
       .videos .day-videos-list-container {
         overflow: hidden;
-        max-height: 1000px;
+        max-height: 0px;
         transition: 0.5s ease-in-out;
       }
 
@@ -191,10 +191,10 @@
             <h2>
               ${new Date(parseFloat(date)).toDateString()}
               <div class="day-container-collapse" onclick="collapse(this);">
-                ➖
+                ➕
               </div>
             </h2>
-            <div class="day-videos-list-container" data-hidden="false">
+            <div class="day-videos-list-container" data-hidden="true">
             ${Object.entries(cameras).map(renderCamForDate).join("")}
             </div>
         </div>
