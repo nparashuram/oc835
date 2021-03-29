@@ -124,9 +124,9 @@
           .then((videos) =>
             videos.reduce((acc, { camera: cam, time: timeStr, file }, idx) => {
               if (cam && timeStr && file) {
-                const time = new Date(timeStr),
-                  day = time.toDateString(),
-                  hr = time.getHours();
+                const time = new Date(timeStr);
+                const day = new Date(timeStr).setHours(0, 0, 0, 0);
+                const hr = time.getHours();
 
                 acc[day] == null && (acc[day] = {});
                 acc[day][cam] == null && (acc[day][cam] = {});
@@ -189,7 +189,7 @@
       const renderDate = ([date, cameras]) => `
         <div class="day-container">
             <h2>
-              ${date}
+              ${new Date(parseFloat(date)).toDateString()}
               <div class="day-container-collapse" onclick="collapse(this);">
                 ➖
               </div>
@@ -206,7 +206,10 @@
         document.getElementById("videoContainer").innerHTML =
           Object.keys(videos).length === 0
             ? "<h1>No Videos recorded</h1>"
-            : Object.entries(videos).map(renderDate).join("");
+            : Object.entries(videos)
+                .sort(([a, _], [b, __]) => (a > b ? -1 : 1))
+                .map(renderDate)
+                .join("");
       });
     </script>
   </body>
