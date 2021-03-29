@@ -3,6 +3,7 @@ body {
   margin: 0;
   font-family: "Calibri", Helvetica, sans-serif;
   font-size: 14px;
+  touch-action: manipulation;
 }
 .root {
   margin-right: auto;
