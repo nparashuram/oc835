@@ -30,12 +30,17 @@
         padding: 6px;
       }
 
-      .videos .day-container-collapse {
+      .videos .camera-container-collapse-button {
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      .videos .day-container-collapse-button {
         float: right;
         cursor: pointer;
       }
 
-      .videos .day-videos-list-container {
+      .videos .collapse-content {
         overflow: hidden;
         max-height: 0px;
         transition: 0.5s ease-in-out;
@@ -73,12 +78,12 @@
       }
 
       .videos .delete-cam-date {
-        display: inline-block;
+        float: right;
         font-size: 1em;
-        border: SOLID 2px lightcoral;
-        padding: 4px 3px 4px 7px;
+        padding: 15px 3px 4px 7px;
         border-radius: 4px;
         cursor: pointer;
+        margin-top: 15px;
       }
     </style>
     <title>OC835 - Cameras</title>
@@ -140,14 +145,16 @@
 
       function collapse(el) {
         const dayVideosListContainer = el
-          .closest(".day-container")
-          ?.getElementsByClassName("day-videos-list-container")[0];
+          .closest(".collapse-container")
+          ?.getElementsByClassName("collapse-content")[0];
 
         if (dayVideosListContainer) {
-          const isHidden = dayVideosListContainer.dataset.hidden === "true";
-          dayVideosListContainer.dataset.hidden = isHidden ? "false" : "true";
+          const isHidden = el.dataset.hidden === "true";
           dayVideosListContainer.style["max-height"] = isHidden ? "none" : "0";
-          el.innerHTML = isHidden ? "➖" : "➕";
+          el.dataset.hidden = isHidden ? "false" : "true";
+          el.getElementsByClassName("collapse-button")[0].innerHTML = isHidden
+            ? "➖"
+            : "➕";
         }
       }
 
@@ -166,8 +173,13 @@
         </div>`;
 
       const renderCamForDate = ([camera, hours]) => `
-        <div>
-          <h3 class='camera-name'>${camera}</h3>
+        <div class="camera-container collapse-container">
+          <h3 class='camera-name' onclick="collapse(this);" data-hidden="true">
+            ${camera}
+            <div class="camera-container-collapse-button collapse-button">
+            ➕
+            </div>
+          </h3>
           <div class='delete-cam-date'
             onclick='deleteVideos(${JSON.stringify(
               Object.values(hours).reduce(
@@ -178,21 +190,21 @@
           '>
             🗑️
           </div>
-          <div class='camera-video-container'>
+          <div class='camera-video-container collapse-content'>
           ${Object.values(hours).map(renderHours).join("")}
           </div>
         </div>
       `;
 
       const renderDate = ([date, cameras]) => `
-        <div class="day-container">
-            <h2>
+        <div class="day-container collapse-container">
+            <h2 onclick="collapse(this);" data-hidden="true">
               ${new Date(parseFloat(date)).toDateString()}
-              <div class="day-container-collapse" onclick="collapse(this);">
+              <div class="day-container-collapse-button collapse-button">
                 ➕
               </div>
             </h2>
-            <div class="day-videos-list-container" data-hidden="true">
+            <div class="day-videos-list-container collapse-content">
             ${Object.entries(cameras).map(renderCamForDate).join("")}
             </div>
         </div>
