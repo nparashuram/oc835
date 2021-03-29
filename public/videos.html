@@ -146,9 +146,7 @@
         if (dayVideosListContainer) {
           const isHidden = dayVideosListContainer.dataset.hidden === "true";
           dayVideosListContainer.dataset.hidden = isHidden ? "false" : "true";
-          dayVideosListContainer.style["max-height"] = isHidden
-            ? "1000px"
-            : "0";
+          dayVideosListContainer.style["max-height"] = isHidden ? "none" : "0";
           el.innerHTML = isHidden ? "➖" : "➕";
         }
       }
