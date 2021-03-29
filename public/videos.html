@@ -30,6 +30,17 @@
         padding: 6px;
       }
 
+      .videos .day-container-collapse {
+        float: right;
+        cursor: pointer;
+      }
+
+      .videos .day-videos-list-container {
+        overflow: hidden;
+        max-height: 1000px;
+        transition: 0.5s ease-in-out;
+      }
+
       .videos .hour-container {
         margin: 10px 0;
         flex-wrap: wrap;
@@ -127,6 +138,21 @@
             }, {})
           );
 
+      function collapse(el) {
+        const dayVideosListContainer = el
+          .closest(".day-container")
+          ?.getElementsByClassName("day-videos-list-container")[0];
+
+        if (dayVideosListContainer) {
+          const isHidden = dayVideosListContainer.dataset.hidden === "true";
+          dayVideosListContainer.dataset.hidden = isHidden ? "false" : "true";
+          dayVideosListContainer.style["max-height"] = isHidden
+            ? "1000px"
+            : "0";
+          el.innerHTML = isHidden ? "➖" : "➕";
+        }
+      }
+
       const renderHours = (hours) => `
         <div class = "hour-container">
           ${hours
@@ -144,7 +170,7 @@
       const renderCamForDate = ([camera, hours]) => `
         <div>
           <h3 class='camera-name'>${camera}</h3>
-          <div class='delete-cam-date' 
+          <div class='delete-cam-date'
             onclick='deleteVideos(${JSON.stringify(
               Object.values(hours).reduce(
                 (acc, cur) => [...acc, ...cur.map(({ file }) => file)],
@@ -156,13 +182,21 @@
           </div>
           <div class='camera-video-container'>
           ${Object.values(hours).map(renderHours).join("")}
+          </div>
         </div>
       `;
 
       const renderDate = ([date, cameras]) => `
-        <div>
-            <h2>${date}</h2>
+        <div class="day-container">
+            <h2>
+              ${date}
+              <div class="day-container-collapse" onclick="collapse(this);">
+                ➖
+              </div>
+            </h2>
+            <div class="day-videos-list-container" data-hidden="false">
             ${Object.entries(cameras).map(renderCamForDate).join("")}
+            </div>
         </div>
       `;
 
