@@ -42,7 +42,6 @@
 
       .videos .collapse-content {
         overflow: hidden;
-        max-height: 0px;
         transition: 0.5s ease-in-out;
       }
 
@@ -172,12 +171,12 @@
             .join("")}
         </div>`;
 
-      const renderCamForDate = ([camera, hours]) => `
+      const renderCamForDate = ([camera, hours], i) => `
         <div class="camera-container collapse-container">
           <h3 class='camera-name' onclick="collapse(this);" data-hidden="true">
             ${camera}
             <div class="camera-container-collapse-button collapse-button">
-            ➕
+            ${i === 0 ? "➖" : "➕"}
             </div>
           </h3>
           <div class='delete-cam-date'
@@ -190,21 +189,25 @@
           '>
             🗑️
           </div>
-          <div class='camera-video-container collapse-content'>
+          <div class='camera-video-container collapse-content' style="max-height: ${
+            i === 0 ? "none" : "0px"
+          };">
           ${Object.values(hours).map(renderHours).join("")}
           </div>
         </div>
       `;
 
-      const renderDate = ([date, cameras]) => `
+      const renderDate = ([date, cameras], i) => `
         <div class="day-container collapse-container">
             <h2 onclick="collapse(this);" data-hidden="true">
               ${new Date(parseFloat(date)).toDateString()}
               <div class="day-container-collapse-button collapse-button">
-                ➕
+                ${i === 0 ? "➖" : "➕"}
               </div>
             </h2>
-            <div class="day-videos-list-container collapse-content">
+            <div class="day-videos-list-container collapse-content"  style="max-height: ${
+              i === 0 ? "none" : "0px"
+            };">
             ${Object.entries(cameras).map(renderCamForDate).join("")}
             </div>
         </div>
