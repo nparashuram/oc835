@@ -161,7 +161,9 @@
 
       let currentIndex = 0,
         videos = [],
-        playbackRate = videoEl.playbackRate;
+        playbackRate =
+          parseFloat(window.localStorage.getItem("playbackRate")) ||
+          videoEl.playbackRate;
 
       const actions = {
         slow() {
@@ -198,6 +200,7 @@
         playbackRate > 8 && (playbackRate = 8);
         playbackRate < 0.25 && (playbackRate = 0.25);
         document.getElementById("playbackRate").innerHTML = `x${playbackRate}`;
+        window.localStorage.setItem("playbackRate", playbackRate);
         videoEl.playbackRate = playbackRate;
       }
 
