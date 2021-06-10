@@ -72,6 +72,17 @@
         text-decoration: none;
       }
 
+      #accessKeyHelper {
+        position: absolute;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 2em;
+        opacity: 0;
+        transition-duration: 0.5s;
+      }
+
       @media screen and (orientation: portrait) {
         .video-container {
           width: 100%;
@@ -105,11 +116,14 @@
   <body>
     <div class="root">
       <div class="title">
-        <h4><a href="/videos">❌</a></h4>
+        <h4>
+          <a href="/videos" data-action="goBack" data-accessKey="Escape">❌</a>
+        </h4>
         <h4 id="timeTitle"></h4>
         <h4 id="cameraTitle"></h4>
       </div>
       <div class="video-container">
+        <div id="accessKeyHelper"></div>
         <video
           preload
           playsinline
@@ -121,18 +135,34 @@
       </div>
       <div class="toolbar">
         <div class="sub-toolbar">
-          <button data-action="prevVideo" class="prev-video">⏮️</button>
-          <button data-action="nextVideo" class="next-video">⏭️</button>
+          <button
+            data-action="prevVideo"
+            class="prev-video"
+            data-accessKey="ArrowLeft"
+          >
+            ⏮️
+          </button>
+          <button
+            data-action="nextVideo"
+            class="next-video"
+            data-accessKey="ArrowRight"
+          >
+            ⏭️
+          </button>
         </div>
         <div class="sub-toolbar">
-          <button><a id="downloadBtn" href="#" download>💾</a></button>
+          <button>
+            <a id="downloadBtn" href="#" download data-accessKey="ArrowDown"
+              >💾</a
+            >
+          </button>
+          <button data-action="togglePlay" data-accessKey=" "></button>
           <button data-action="deleteVideo">🗑️</button>
-          <button data-action=""></button>
         </div>
         <div class="sub-toolbar">
-          <button data-action="slow">⏪</button>
+          <button data-action="slow" data-accessKey="[">⏪</button>
           <div id="playbackRate"></div>
-          <button data-action="fast">⏩</button>
+          <button data-action="fast" data-accessKey="]">⏩</button>
         </div>
       </div>
     </div>
@@ -155,6 +185,7 @@
           );
 
       const videoEl = document.getElementById("video");
+      const accessKeyHelper = document.getElementById("accessKeyHelper");
       video.addEventListener("ended", () => {
         currentIndex < videos.length - 1 && actions.nextVideo();
       });
@@ -193,6 +224,12 @@
         nextVideo() {
           currentIndex++;
           setVideo();
+        },
+        goBack() {
+          document.location.href = "/videos";
+        },
+        togglePlay() {
+          videoEl.paused ? videoEl.play() : videoEl.pause();
         },
       };
 
@@ -253,6 +290,25 @@
           typeof actions[e.target.dataset.action] === "function"
         ) {
           actions[e.target.dataset.action](e.target.dataset.args);
+        }
+      });
+
+      let accessKeyHelperTimerId = null;
+      document.addEventListener("keyup", (e) => {
+        const button = document.querySelector(`[data-accessKey='${e.key}'`);
+        if (button != null) {
+          window.setTimeout(() => {
+            button.click();
+          }, 0);
+
+          if (accessKeyHelperTimerId) {
+            window.clearTimeout(accessKeyHelperTimerId);
+          }
+          accessKeyHelper.style.opacity = 1;
+          accessKeyHelperTimerId = window.setTimeout(() => {
+            accessKeyHelper.style.opacity = 0;
+          }, 1000);
+          document.getElementById("accessKeyHelper").innerHTML = e.key;
         }
       });
     </script>
