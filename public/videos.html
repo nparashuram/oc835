@@ -53,7 +53,7 @@
 
       .videos .collapse-content {
         overflow: hidden;
-        transition: max-height 0.5s ease-in-out;
+        /* transition: max-height 0.5s ease-in-out; */
       }
 
       .videos .hour-container {
@@ -252,6 +252,10 @@
           },
           false
         );
+        const firstDate = Object.keys(videos)[Object.keys(videos).length - 1];
+        if (firstDate) {
+          toggleCollapse(firstDate, Object.keys(videos[firstDate])[0]);
+        }
       });
     </script>
   </body>
