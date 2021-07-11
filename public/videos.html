@@ -229,19 +229,24 @@
         console.log(videos);
         const videoContainer = document.getElementById("videoContainer");
         videoContainer.innerHTML = render(videos);
+
+        // Mouse interactivity
         videoContainer.addEventListener(
           "click",
           (e) => {
+            const getContainer = (container) => {
+              const el = container.closest(".collapse-container");
+              return [el.dataset["idDate"], el.dataset["idCamera"]];
+            };
+
+            const action = e.target.dataset.action;
             switch (e.target.dataset.action) {
               case "toggleCollapse": {
-                const el = e.target.closest(".collapse-container");
-                toggleCollapse(el.dataset["idDate"], el.dataset["idCamera"]);
+                toggleCollapse(...getContainer(e.target));
                 break;
               }
               case "deleteVideos": {
-                const el = e.target.closest(".collapse-container");
-                const date = el.dataset["idDate"];
-                const cam = el.dataset["idCamera"];
+                const [date, cam] = getContainer(e.target);
                 const list = Object.values(videos[date][cam])
                   .reduce((acc, cur) => [...acc, ...cur], [])
                   .map((v) => v.file);
@@ -252,6 +257,8 @@
           },
           false
         );
+
+        // Open first element by default
         const firstDate = Object.keys(videos)[Object.keys(videos).length - 1];
         if (firstDate) {
           toggleCollapse(firstDate, Object.keys(videos[firstDate])[0]);
