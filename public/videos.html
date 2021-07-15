@@ -134,6 +134,11 @@
         }
       };
 
+      const getVideoList = (date, cam, videos) =>
+        Object.values(videos[date][cam])
+          .reduce((acc, cur) => [...acc, ...cur], [])
+          .map((v) => v.file);
+
       function render(videos) {
         const renderHours = (hours) => `
               <div class = "hour-container">
@@ -246,13 +251,37 @@
                 break;
               }
               case "deleteVideos": {
-                const [date, cam] = getContainer(e.target);
-                const list = Object.values(videos[date][cam])
-                  .reduce((acc, cur) => [...acc, ...cur], [])
-                  .map((v) => v.file);
-                API.deleteVideos(list);
+                API.deleteVideos(getVideoList(...getContainer(e.target), videos));
                 break;
               }
+            }
+          },
+          false
+        );
+
+        document.addEventListener(
+          "keyup",
+          (e) => {
+            function findOpen() {
+              const dateEl = document.querySelector('.videos .day-container[data-collapsed="false"]');
+              const camEl = dateEl && dateEl.querySelector('.day-videos-list-container .camera-container[data-collapsed="false"]');
+              return [dateEl && dateEl.dataset.idDate, camEl && camEl.dataset.idCamera];
+            }
+
+            switch (e.key) {
+              case "ArrowLeft":
+                toggleCollapse(...findOpen(), true);
+                break;
+              case "Enter":
+                const [date, cam] = findOpen();
+                if (date && cam && videos[date][cam] && videos[date][cam]) {
+                  const hour = videos[date][cam];
+                  window.location = `/video.html#${videos[date][cam][Object.keys(hour)[0]][0].file}`;
+                }
+                break;
+              case "D":
+                API.deleteVideos(getVideoList(...findOpen(), videos));
+                break;
             }
           },
           false
