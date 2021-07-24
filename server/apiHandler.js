@@ -5,6 +5,8 @@ const fs = require("fs");
 const router = express.Router({ strict: "false" });
 
 const config = require("./config");
+const cameraConfig = require("./cameraConfig");
+
 const { getTimeFromFilename } = require("./timeFilename.js");
 
 router.get("/cameras", (req, res, next) => {
@@ -18,12 +20,22 @@ router.get("/cameras", (req, res, next) => {
   }
 });
 
+router.get("/camera/:ip", (req, res, next) => {
+  cameraConfig({ ...req.params, ...req.query })
+    .then((config) => {
+      res.send(config);
+      next();
+    })
+    .catch((e) => {
+      res.status(500).send("Could not get camera configs");
+      next();
+    });
+});
+
 router.post("/videos/delete", async (req, res, next) => {
   const files = req.body;
   if (Array.isArray(files)) {
-    files.forEach((file) =>
-      fs.unlinkSync(path.resolve(config.get().dataDir, file))
-    );
+    files.forEach((file) => fs.unlinkSync(path.resolve(config.get().dataDir, file)));
     res.status(200).send({ deleted: files.length });
     next();
   } else {
