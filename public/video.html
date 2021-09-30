@@ -228,7 +228,6 @@
 
         const { camera, time, file } = getTimeFromFilename(videos[currentIndex]);
         if (!camera || !time) {
-          alert("No videos found");
           document.location.href = "/videos";
         } else {
           videoEl.setAttribute("src", `/raw/videos/${file}`);
