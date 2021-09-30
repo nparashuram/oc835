@@ -12,6 +12,10 @@
     <meta name="theme-color" content="#fff" />
     <link href="main.css" rel="stylesheet" />
     <style>
+      body {
+        background-color: #333;
+      }
+
       .root {
         padding: 0;
       }
@@ -124,37 +128,16 @@
       </div>
       <div class="video-container">
         <div id="accessKeyHelper"></div>
-        <video
-          preload
-          playsinline
-          autoplay="false"
-          controls
-          disablePictureInPicture
-          id="video"
-        ></video>
+        <video preload playsinline autoplay="false" controls disablePictureInPicture id="video"></video>
       </div>
       <div class="toolbar">
         <div class="sub-toolbar">
-          <button
-            data-action="prevVideo"
-            class="prev-video"
-            data-accessKey="ArrowLeft"
-          >
-            ⏮️
-          </button>
-          <button
-            data-action="nextVideo"
-            class="next-video"
-            data-accessKey="ArrowRight"
-          >
-            ⏭️
-          </button>
+          <button data-action="prevVideo" class="prev-video" data-accessKey="ArrowLeft">⏮️</button>
+          <button data-action="nextVideo" class="next-video" data-accessKey="ArrowRight">⏭️</button>
         </div>
         <div class="sub-toolbar">
           <button>
-            <a id="downloadBtn" href="#" download data-accessKey="ArrowDown"
-              >💾</a
-            >
+            <a id="downloadBtn" href="#" download data-accessKey="ArrowDown">💾</a>
           </button>
           <button data-action="togglePlay" data-accessKey=" "></button>
           <button data-action="deleteVideo" data-accessKey="D">🗑️</button>
@@ -175,11 +158,7 @@
           .then((response) => response.json())
           .then((videos) =>
             videos
-              .filter(
-                (video) =>
-                  video.camera === camera &&
-                  new Date(video.time).toDateString() === day
-              )
+              .filter((video) => video.camera === camera && new Date(video.time).toDateString() === day)
               .sort((a, b) => a.time >= b.time)
               .map(({ file }) => file)
           );
@@ -192,9 +171,7 @@
 
       let currentIndex = 0,
         videos = [],
-        playbackRate =
-          parseFloat(window.localStorage.getItem("playbackRate")) ||
-          videoEl.playbackRate;
+        playbackRate = parseFloat(window.localStorage.getItem("playbackRate")) || videoEl.playbackRate;
 
       const actions = {
         slow() {
@@ -245,15 +222,11 @@
         currentIndex < 0 && (currentIndex = 0);
         currentIndex >= videos.length && (currentIndex = videos.length - 1);
 
-        document.getElementsByClassName("prev-video")[0].disabled =
-          currentIndex === 0;
+        document.getElementsByClassName("prev-video")[0].disabled = currentIndex === 0;
 
-        document.getElementsByClassName("next-video")[0].disabled =
-          currentIndex === videos.length - 1;
+        document.getElementsByClassName("next-video")[0].disabled = currentIndex === videos.length - 1;
 
-        const { camera, time, file } = getTimeFromFilename(
-          videos[currentIndex]
-        );
+        const { camera, time, file } = getTimeFromFilename(videos[currentIndex]);
         if (!camera || !time) {
           alert("No videos found");
           document.location.href = "/videos";
@@ -263,12 +236,8 @@
           document.title = date.toTimeString();
           document.location.hash = file;
           document.getElementById("cameraTitle").innerHTML = camera;
-          document.getElementById(
-            "timeTitle"
-          ).innerHTML = `${date.toDateString()}, ${getFormattedTime(date)}`;
-          document
-            .getElementById("downloadBtn")
-            .setAttribute("href", `/raw/videos/${file}`);
+          document.getElementById("timeTitle").innerHTML = `${date.toDateString()}, ${getFormattedTime(date)}`;
+          document.getElementById("downloadBtn").setAttribute("href", `/raw/videos/${file}`);
           setPlaybackRate();
         }
       }
@@ -285,10 +254,7 @@
       });
 
       document.addEventListener("click", async (e) => {
-        if (
-          e.target.dataset.action &&
-          typeof actions[e.target.dataset.action] === "function"
-        ) {
+        if (e.target.dataset.action && typeof actions[e.target.dataset.action] === "function") {
           actions[e.target.dataset.action](e.target.dataset.args);
         }
       });

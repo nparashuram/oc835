@@ -21,4 +21,7 @@ curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=HTTP_EVENT&http_post_url=ht
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_status=1"
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_gw=http://192.168.1.200:8080/api/register"
 
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=JPEG&resolution=4"
+
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=VIDEO&bmp_overlay=0"
 
