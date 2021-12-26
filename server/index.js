@@ -14,6 +14,9 @@ const apiHandler = require("./apiHandler");
 const config = require("./config");
 const uploadHandler = require("./uploadHandler");
 
+const healthCheck = require("./healthcheck");
+healthCheck.start();
+
 const app = express();
 app.use(bodyParser.json());
 

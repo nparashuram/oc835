@@ -1,5 +1,6 @@
 {
   "dataDir": "./.data",
   "logDir": "./logs",
-  "cameras": [{ "ip": "192.168.1.1", "name": "Cam1" }]
+  "cameras": [{ "ip": "192.168.1.1", "name": "Cam1" }],
+  "healthcheckUrl": "https://hc-ping.com/xxx"
 }
