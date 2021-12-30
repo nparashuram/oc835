@@ -25,3 +25,4 @@ curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=JPEG&resolution=4"
 
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=VIDEO&bmp_overlay=0"
 
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=PORT_FILTER&port_filter1=80,443,554,6789"
