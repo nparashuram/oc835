@@ -52,7 +52,7 @@ router.get("/videos", async (req, res, next) => {
         throw new Error("e");
       }
       console.log(files);
-      res.json(files.map(getTimeFromFilename));
+      res.json(files);
       next();
     });
   } catch (e) {

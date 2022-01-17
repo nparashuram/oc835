@@ -211,6 +211,7 @@
             headers: { pragma: "no-cache", "cache-control": "no-cache" },
           })
             .then((response) => response.json())
+            .then((videos) => videos.map((file) => getTimeFromFilename(file)))
             .then((videos) =>
               videos.reduce((acc, { camera: cam, time: timeStr, file }, idx) => {
                 if (cam && timeStr && file) {

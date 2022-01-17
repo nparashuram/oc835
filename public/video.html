@@ -158,6 +158,7 @@
           .then((response) => response.json())
           .then((videos) =>
             videos
+              .map((file) => getTimeFromFilename(file))
               .filter((video) => video.camera === camera && new Date(video.time).toDateString() === day)
               .sort((a, b) => a.time >= b.time)
               .map(({ file }) => file)
@@ -228,7 +229,7 @@
 
         const { camera, time, file } = getTimeFromFilename(videos[currentIndex]);
         if (!camera || !time) {
-          document.location.href = "/videos";
+          alert("Could not find video");
         } else {
           videoEl.setAttribute("src", `/raw/videos/${file}`);
           const date = new Date(time);
