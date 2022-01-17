@@ -4,6 +4,7 @@ IP=$1
 USER=${CAM_USERNAME:-administrator}
 PASS=${CAM_PASSWORD:-}
 NAME=$2
+SERVER=${SERVER:-192.168.1.222:8080}
 
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=AUDIO&audio_in=1"
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=AUDIO&audio_in2=1"
@@ -16,10 +17,10 @@ curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=EVENT&event1_entry=is=1|es=
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=H264&bit_rate2=1000"
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=H264&quality_type2=1"
 
-curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=HTTP_EVENT&http_post_url=http://192.168.1.200:8080/upload/$NAME"
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=HTTP_EVENT&http_post_url=http://$SERVER/upload/$NAME"
 
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_status=1"
-curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_gw=http://192.168.1.200:8080/api/register"
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_gw=http://$SERVER/api/register"
 
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=JPEG&resolution=4"
 
