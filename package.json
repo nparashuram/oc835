@@ -4,7 +4,8 @@
   "description": "Set of utils for the OC835 cameras",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "serve": "nodemon server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,5 +15,8 @@
     "express-winston": "^4.1.0",
     "serve-index": "^1.9.1",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
