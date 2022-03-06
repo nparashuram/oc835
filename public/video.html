@@ -242,7 +242,7 @@
           document.location.hash = file;
           document.getElementById("cameraTitle").innerHTML = camera;
           document.getElementById("timeTitle").innerHTML = `${date.toDateString()}, ${getFormattedTime(date)}`;
-          document.getElementById("downloadBtn").setAttribute("href", `/raw/videos/${file}`);
+          document.getElementById("downloadBtn").setAttribute("href", `./raw/videos/${file}`);
           setPlaybackRate();
         }
       }
