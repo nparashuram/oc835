@@ -39,7 +39,6 @@ router.post("/:cam", (req, res, next) => {
     logger.info("Finished writing video data to " + filename);
     wstream.end();
     res.send("ok");
-    next();
   });
   req.on("error", function (err) {
     logger.error("Error during HTTP upload", err);
