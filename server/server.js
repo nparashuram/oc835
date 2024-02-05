@@ -6,9 +6,7 @@ const bodyParser = require("body-parser");
 
 const PORT = 8080;
 
-const healthCheck = require("./healthcheck");
 const index = require("./index");
-healthCheck.start();
 
 const app = express();
 app.use(bodyParser.json());
