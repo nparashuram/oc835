@@ -1,6 +1,7 @@
 {
-  "dataDir": "./.data",
-  "logDir": "./logs",
+  "dataDir": "./.out/data",
+  "logDir": "./.out/logs",
   "cameras": [{ "ip": "192.168.1.1", "name": "Cam1" }],
-  "healthcheckUrl": "https://hc-ping.com/xxx"
+  "healthcheckUrl": "https://hc-ping.com/xxx",
+  "healthcheckIntervalMins": 30
 }

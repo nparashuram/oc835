@@ -4,6 +4,7 @@ const https = require("https");
 
 const config = require("./config");
 const URL = config.get().healthcheckUrl;
+const healthcheckIntervalMins = config.get().healthcheckIntervalMins;
 console.log(config.get());
 
 const logger = winston.createLogger({
@@ -21,8 +22,8 @@ const logger = winston.createLogger({
 });
 
 function start(interval) {
-  interval = interval || 1000 * 60 * 60; // 1 hour
-  logger.info("[HealthCheck] Pinging URL at ", URL);
+  interval = interval || 1000 * 60 * healthcheckIntervalMins || 1000 * 60 * 30; // 0.5 hour
+  logger.info("[HealthCheck] Pinging URL at " + URL + " every " + healthcheckIntervalMins + " minutes ");
   runCheck(interval);
 }
 
