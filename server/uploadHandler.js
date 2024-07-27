@@ -6,7 +6,7 @@ const winston = require("winston");
 
 const { getFilenameFromTime } = require("./timeFilename");
 
-const config = require("./config");
+const { DATA_DIR, LOG_DIR } = process.env
 const logger = winston.createLogger({
   level: "debug",
   format: winston.format.combine(
@@ -16,11 +16,11 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: path.join(config.get().logDir, "error.log"),
+      filename: path.join(LOG_DIR, "error.log"),
       level: "error",
     }),
     new winston.transports.File({
-      filename: path.join(config.get().logDir, "upload.log"),
+      filename: path.join(LOG_DIR, "upload.log"),
     }),
   ],
 });
@@ -29,7 +29,7 @@ const router = express.Router({ strict: "false" });
 
 router.post("/:cam", (req, res, next) => {
   const filename = path.join(
-    config.get().dataDir,
+    DATA_DIR,
     getFilenameFromTime(req.params.cam, new Date())
   );
   logger.debug("Uploading video to " + filename);

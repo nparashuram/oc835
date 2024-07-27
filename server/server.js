@@ -4,10 +4,13 @@ const winston = require("winston");
 const expressWinston = require("express-winston");
 const bodyParser = require("body-parser");
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const healthCheck = require("./healthcheck");
 healthCheck.start();
 
-const PORT = 8080;
+const PORT = process.env.PORT;
 
 const index = require("./index");
 

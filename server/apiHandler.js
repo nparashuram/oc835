@@ -4,13 +4,11 @@ const fs = require("fs");
 
 const router = express.Router({ strict: "false" });
 
-const config = require("./config");
-
-const { getTimeFromFilename } = require("./timeFilename.js");
+const { DATA_DIR, CAMERAS } = process.env
 
 router.get("/cameras", (req, res, next) => {
   try {
-    res.send(config.get().cameras);
+    res.send(CAMERAS.split(' '));
   } catch (e) {
     console.log(e);
     res.status(500).send(e.message);
@@ -23,7 +21,7 @@ router.post("/videos/delete", async (req, res, next) => {
   const files = req.body;
   if (Array.isArray(files)) {
     files.forEach((file) =>
-      fs.unlinkSync(path.resolve(config.get().dataDir, file))
+      fs.unlinkSync(path.resolve(DATA_DIR, file))
     );
     res.status(200).send({ deleted: files.length });
     next();
@@ -35,7 +33,7 @@ router.post("/videos/delete", async (req, res, next) => {
 
 router.get("/videos", async (req, res, next) => {
   try {
-    const directory = config.get().dataDir;
+    const directory = DATA_DIR;
     fs.readdir(directory, (err, files) => {
       if (err) {
         throw new Error("e");
