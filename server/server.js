@@ -28,11 +28,6 @@ app.use(
 
 app.use(index);
 
-app.get("/videos", (_, res, next) => {
-  res.redirect("/videos.html");
-  next();
-});
-
 app.listen(PORT, () => {
   console.log(`Server started at  http://localhost:${PORT}`);
 });

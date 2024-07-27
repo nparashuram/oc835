@@ -20,6 +20,11 @@ router.use("/raw/videos", express.static(config.get().dataDir));
 router.use("/raw/logs", serveIndex(config.get().logDir, { icons: true }));
 router.use("/raw/logs", express.static(config.get().logDir));
 
+router.get("/videos", (_, res, next) => {
+  res.redirect("videos.html");
+  next();
+});
+
 router.get("/", (_, res, next) => {
   res.redirect("/index.html");
   next();
