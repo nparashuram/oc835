@@ -4,6 +4,9 @@ const winston = require("winston");
 const expressWinston = require("express-winston");
 const bodyParser = require("body-parser");
 
+const healthCheck = require("./healthcheck");
+healthCheck.start();
+
 const PORT = 8080;
 
 const index = require("./index");

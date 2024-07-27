@@ -2,9 +2,6 @@ const path = require("path");
 const fs = require("fs");
 const express = require("express");
 
-const healthCheck = require("./healthcheck");
-healthCheck.start();
-
 const serveIndex = require("serve-index");
 const apiHandler = require("./apiHandler");
 const config = require("./config");
