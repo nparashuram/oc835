@@ -15,7 +15,9 @@
     "express": "^4.17.1",
     "express-winston": "^4.1.0",
     "serve-index": "^1.9.1",
-    "winston": "^3.3.3"
+    "sqlite3": "^5.1.7",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
