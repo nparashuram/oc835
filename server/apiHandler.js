@@ -9,18 +9,16 @@ const router = express.Router({ strict: "false" });
 const { CAMERAS, DATA_DIR } = process.env
 const logger = util.getLogger('apiHandler')
 
-router.get("/cameras", (req, res, next) => {
+router.get("/cameras", (_, res) => {
   try {
     res.send(CAMERAS.split(' '));
   } catch (e) {
     logger.error('Could not get cameras', e)
     res.status(500).send(e.message);
-  } finally {
-    next();
   }
 });
 
-router.post("/videos/delete", async (req, res, next) => {
+router.post("/videos/delete", async (req, res) => {
   const files = req.body;
   try {
     const result = db.softDeleteVideos(files)
@@ -29,20 +27,15 @@ router.post("/videos/delete", async (req, res, next) => {
     logger.error('Could not delete videos', e)
     res.status(500).send(e.message);
   }
-  finally {
-    next();
-  }
 });
 
-router.get("/videos", async (req, res, next) => {
+router.get("/videos", async (_, res) => {
   try {
     res.json(await db.getVideos());
   }
   catch (e) {
     logger.error('Could not get video list', e)
     res.status(500).send(e.message);
-  } finally {
-    next();
   }
 });
 

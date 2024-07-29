@@ -11,9 +11,6 @@ const PORT = process.env.PORT;
 
 const index = require("./index");
 const util = require("./util");
-const jobs = require("./jobs");
-
-jobs.start()
 
 const app = express();
 const logger = util.getLogger('oc835-server');

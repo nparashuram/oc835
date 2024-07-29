@@ -9,6 +9,9 @@ if (DATA_DIR == null || LOG_DIR == null) {
   throw new Error("Environment variables DATA_DIR or LOG_DIR not found");
 }
 
+const jobs = require("./jobs");
+jobs.start();
+
 const router = express.Router();
 
 router.use(express.static(path.join(__dirname, "../public")));
