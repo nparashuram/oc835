@@ -47,25 +47,25 @@ router.get("/videos", async (req, res, next) => {
 });
 
 router.post("/upload/:cam", (req, res, next) => {
-  const time = new Date();
-  const camera = req.params.cam;
-  const filename = path.resolve(
-    DATA_DIR,
-    util.getFilenameFromTime(camera, time)
-  );
-  logger.debug("Uploading video to " + filename);
-  var wstream = fs.createWriteStream(filename);
+  const file = util.getFilenameFromTime(req.params.cam, new Date())
+  logger.debug("Uploading video to " + file);
+  var wstream = fs.createWriteStream(path.resolve(DATA_DIR, file));
   req.on("data", (chunk) => wstream.write(chunk));
   req.on("end", () => {
-    logger.info("Finished writing video data to " + filename);
+    logger.info("Finished writing video data to " + file);
     wstream.end();
-    db.addVideo(camera, time, filename);
-    res.send("ok");
+    db.addVideo(file).then(() => {
+      res.send("ok");
+    }).catch(e => {
+      logger.error('Could not upload video', e)
+      res.status(500).send(e.message);
+    });
   });
+
   req.on("error", function (err) {
     logger.error("Error during HTTP upload", filename, err);
+    next();
   });
-  next();
 });
 
 module.exports = router;
