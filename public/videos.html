@@ -145,6 +145,7 @@
         const renderHours = (hours) => `
               <div class = "hour-container">
                 ${hours
+                  .sort((a,b) => a.time > b.time ? 1:-1)
                   .map(
                     ({ file, time }) => `
                     <div class="video-item">
