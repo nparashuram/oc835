@@ -34,7 +34,7 @@ function run(interval) {
     }).catch(e => logger.error('Could not get deleted files', e))
         .finally(() => {
             setTimeout(function () {
-                runCheck(interval);
+                run(interval);
             }, interval);
         })
 }
