@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const express = require("express");
 const db = require('./db');
 const util = require("./util");
@@ -44,12 +46,12 @@ router.get("/videos", async (req, res, next) => {
   }
 });
 
-router.post("/:cam", (req, res, next) => {
+router.post("/upload/:cam", (req, res, next) => {
   const time = new Date();
   const camera = req.params.cam;
-  const filename = path.join(
+  const filename = path.resolve(
     DATA_DIR,
-    getFilenameFromTime(camera, time)
+    util.getFilenameFromTime(camera, time)
   );
   logger.debug("Uploading video to " + filename);
   var wstream = fs.createWriteStream(filename);
@@ -63,6 +65,7 @@ router.post("/:cam", (req, res, next) => {
   req.on("error", function (err) {
     logger.error("Error during HTTP upload", filename, err);
   });
+  next();
 });
 
 module.exports = router;
