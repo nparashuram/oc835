@@ -21,7 +21,7 @@ function run(interval) {
             logger.info(`Hard deleting ${files.length} videos.`)
             for (var i = 0; i < files.length; i++) {
                 var file = files[i]
-                console.log("Deleted ", file)
+                logger.info(`Deleted ${file}`)
                 await deleteFile(file);
                 await db.deleteVideo(file);
 
