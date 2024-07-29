@@ -17,7 +17,7 @@ curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=EVENT&event1_entry=is=1|es=
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=H264&bit_rate2=1000"
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=H264&quality_type2=1"
 
-curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=HTTP_EVENT&http_post_url=http://$SERVER/upload/$NAME"
+curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=HTTP_EVENT&http_post_url=http://$SERVER/api/upload/$NAME"
 
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_status=1"
 curl "http://$USER:$PASS@$IP/adm/set_group.cgi?group=OEM_REGISTER&register_gw=http://$SERVER/api/register"
