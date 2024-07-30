@@ -16,7 +16,7 @@ async function withDB(callback) {
             reject(new Error("Data Directory not defined, so cannot create a database"))
             return
         }
-        const db = new sqlite3.Database(path.join(DATA_DIR, 'security.db'), err => {
+        const db = new sqlite3.Database(path.join(DATA_DIR, 'app.db'), err => {
             if (err) {
                 reject(err)
             } else {
