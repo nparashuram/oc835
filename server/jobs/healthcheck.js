@@ -1,10 +1,10 @@
 const https = require("https");
 const util = require("../util");
 
-const { HEALTHCHECK_URL, HEALTHCHECK_INTERVAL, LOG_DIR } = process.env;
+const { HEALTHCHECK_URL, HEALTHCHECK_INTERVAL } = process.env;
 
 if (!HEALTHCHECK_URL || !HEALTHCHECK_INTERVAL) {
-  throw new Error("Environment Variables not defined for HEALTHCHECK_URL or HEALTHCHECK_URL_INTERVAL")
+  throw new Error("Environment Variables not defined for HEALTHCHECK_URL or HEALTHCHECK_INTERVAL")
 }
 
 const logger = util.getLogger('healthCheck')
