@@ -173,17 +173,21 @@
           playbackRate *= 2;
           setPlaybackRate();
         },
-        deleteVideo() {
+        async deleteVideo() {
           const fileToDelete = videos[currentIndex].file;
           videos.splice(currentIndex, 1);
-          setVideo();
-          fetch("api/videos/delete", {
+          await fetch("api/videos/delete", {
             method: "POST",
             body: JSON.stringify([fileToDelete]),
             headers: {
               "Content-Type": "application/json",
             },
           });
+          if (videos.length <= 0) {
+            actions.goBack()
+          } else {
+            setVideo();
+          }
         },
         prevVideo() {
           currentIndex--;
