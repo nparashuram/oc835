@@ -156,19 +156,6 @@
     </div>
     <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript">
-      const fetchVideos = (camera, day) =>
-        fetch("api/videos", {
-          headers: { pragma: "no-cache", "cache-control": "no-cache" },
-        })
-          .then((response) => response.json())
-          .then((videos) =>
-            videos
-              .map((file) => getTimeFromFilename(file))
-              .filter((video) => video.camera === camera && new Date(video.time).toDateString() === day)
-              .sort((a, b) => a.time >= b.time)
-              .map(({ file }) => file)
-          );
-
       const videoEl = document.getElementById("video");
       const accessKeyHelper = document.getElementById("accessKeyHelper");
       video.addEventListener("ended", () => {
@@ -189,7 +176,7 @@
           setPlaybackRate();
         },
         deleteVideo() {
-          const fileToDelete = videos[currentIndex];
+          const fileToDelete = videos[currentIndex].file;
           videos.splice(currentIndex, 1);
           setVideo();
           fetch("api/videos/delete", {
@@ -229,33 +216,32 @@
         currentIndex >= videos.length && (currentIndex = videos.length - 1);
 
         document.getElementsByClassName("prev-video")[0].disabled = currentIndex === 0;
-
         document.getElementsByClassName("next-video")[0].disabled = currentIndex === videos.length - 1;
 
-        const { camera, time, file } = getTimeFromFilename(videos[currentIndex]);
-        if (!camera || !time) {
-          actions.goBack();
-        } else {
-          videoEl.setAttribute("src", `raw/videos/${file}`);
-          const date = new Date(time);
-          document.title = date.toTimeString();
-          document.location.hash = file;
-          document.getElementById("cameraTitle").innerHTML = camera;
-          document.getElementById("timeTitle").innerHTML = `${date.toDateString()}, ${getFormattedTime(date)}`;
-          document.getElementById("downloadBtn").setAttribute("href", `./raw/videos/${file}`);
-          setPlaybackRate();
-        }
+        const { cam, time, file } = videos[currentIndex];
+        videoEl.setAttribute("src", `raw/videos/${file}`);
+        document.title = time.toTimeString();
+        window.location.hash = getVideoPageHash(time, cam, file);
+        document.getElementById("cameraTitle").innerHTML = `${cam} (${currentIndex + 1}/${videos.length})`;
+        document.getElementById("timeTitle").innerHTML = `${time.toDateString()}, ${getFormattedTime(time)}`;
+        document.getElementById("downloadBtn").setAttribute("href", `./raw/videos/${file}`);
+        setPlaybackRate();
       }
 
       document.addEventListener("DOMContentLoaded", async () => {
-        const file = document.location.hash.substring(1);
-        const { camera, time } = getTimeFromFilename(file);
+        const hash = new URLSearchParams(document.location.hash.substring(1));
+        const time = parseInt(hash.get("time"), 10);
+        const cam = hash.get("cam");
+        const file = hash.get("file");
 
-        videos = await fetchVideos(camera, new Date(time).toDateString());
-        currentIndex = videos.findIndex((video) => video === file);
-
-        setPlaybackRate();
-        setVideo();
+        if (time && cam) {
+          const day = new Date(time).setHours(0, 0, 0, 0);
+          videos = [...(await API.fetchVideos()).get(day).get(cam).values()].flat();
+          currentIndex = videos.findIndex((video) => video.file === file);
+          setVideo();
+        } else {
+          actions.goBack();
+        }
       });
 
       document.addEventListener("click", async (e) => {

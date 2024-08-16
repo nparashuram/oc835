@@ -69,11 +69,11 @@ const refreshDatabase = async () => {
 };
 
 const getVideos = async () => withDB((db, cb) => {
-    db.all('SELECT file from videos where NOT is_deleted ORDER BY time DESC LIMIT 10000', (err, rows) => {
+    db.all('SELECT camera, time, file, is_synced, is_deleted from videos where NOT is_deleted ORDER BY time DESC LIMIT 10000', (err, rows) => {
         if (err) {
             cb(err, null);
         } else {
-            cb(null, rows.map(row => row.file));
+            cb(null, rows);
         }
     })
 });

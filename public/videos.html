@@ -72,6 +72,19 @@
         border-radius: 4px;
         cursor: pointer;
         display: inline-block;
+        position: relative;
+      }
+
+      .videos div.video-item-synced {
+        position: absolute;
+        top: -0.5em;
+        right: -0.5em;
+        font-size: 1.5em;
+      }
+
+      .videos div.video-item-deleted {
+        border-style: dotted;
+        opacity: 0.5;
       }
 
       .videos .videoItem a:hover {
@@ -111,12 +124,14 @@
     <script type="text/javascript"></script>
 
     <script type="text/javascript">
+      var videos = null;
+
       const toggleCollapse = (date, cam, val) => {
-        const toggle = (el, defaultVal) => {
+        const toggle = (el, shouldClose) => {
           if (!el) {
             return;
           }
-          const val = typeof defaultVal === "undefined" ? el.dataset.collapsed !== "true" : defaultVal;
+          const val = typeof shouldClose === "undefined" ? el.dataset.collapsed !== "true" : shouldClose;
           el.dataset.collapsed = val;
           el.setAttribute("data-collapsed", val);
           el.querySelector(".collapse-content").style["max-height"] = val ? "0px" : "100000px";
@@ -128,6 +143,7 @@
           toggle(dateCollapseContainer, false);
           const camCollapseContainer = dateCollapseContainer.querySelector(`.camera-container[data-id-camera='${cam}']`);
           toggle(camCollapseContainer, val);
+          window.localStorage.setItem("toggleOpen", [date, cam]);
         } else {
           const dates = document
             .querySelectorAll(`.videos .collapse-container[data-collapsed="false"]:not([data-id-date="${date}"])`)
@@ -136,20 +152,19 @@
         }
       };
 
-      const getVideoList = (date, cam, videos) =>
-        Object.values(videos[date][cam])
-          .reduce((acc, cur) => [...acc, ...cur], [])
-          .map((v) => v.file);
+      const getVideoList = (date, camera, videos) =>
+        date && camera && [...videos.get(parseInt(date, 10)).get(camera).values()].flat().map((v) => v.file);
 
       function render(videos) {
-        const renderHours = (hours) => `
+        const renderHours = ([_, hours]) =>
+          `
               <div class = "hour-container">
                 ${hours
-                  .sort((a,b) => a.time > b.time ? 1:-1)
                   .map(
-                    ({ file, time }) => `
-                    <div class="video-item">
-                      <a href="video.html#${file}" title="${file}">${getFormattedTime(time)}</a>
+                    ({ file, time, is_synced, is_deleted, cam }) => `
+                    <div class="video-item ${is_deleted ? "video-item-deleted" : ""}">
+                      <a href="video.html#${getVideoPageHash(time, cam, file)}">${getFormattedTime(time)}</a>
+                      ${is_synced ? "<div class='video-item-synced'>🗳️</div>" : ""}
                     </div>`
                   )
                   .join("")}
@@ -157,7 +172,7 @@
 
         const renderCamForDate =
           (date) =>
-          ([camera, hours], i) =>
+          ([camera, hours]) =>
             `
               <div class="camera-container collapse-container" data-id-date="${date}" data-id-camera="${camera}" data-collapsed="true">
                 <div>
@@ -166,79 +181,40 @@
                   <div class='delete-cam-date' data-action='deleteVideos')>🗑️</div>
                 </div>
                 <div class='camera-video-container collapse-content' style="max-height: 0px">
-                ${Object.values(hours).map(renderHours).join("")}
+                  ${[...hours.entries()].map(renderHours).join("")}
                 </div>
               </div>
               `;
 
-        const renderDate = ([date, cameras], i) => `
+        const renderDate = ([date, cameras]) => `
               <div class="day-container collapse-container" data-id-date="${date}" data-collapsed="true">
                   <div class="day-container-collapse-button collapse-button" data-action='toggleCollapse'>➕</div>
                   <h2 class="day-videos-title" data-action='toggleCollapse'>
                     ${new Date(parseFloat(date)).toDateString()}
                   </h2>
                   <div class="day-videos-list-container collapse-content"  style="max-height: 0px">
-                    ${Object.entries(cameras)
-                      .sort(([a, _], [b, __]) => (a > b ? 1 : -1))
-                      .map(renderCamForDate(date))
-                      .join("")}
+                    ${[...cameras.entries()].map(renderCamForDate(date)).join("")}
                   </div>
               </div>
             `;
 
-        return Object.keys(videos).length === 0
-          ? "<h1>No Videos recorded</h1>"
-          : Object.entries(videos)
-              .sort(([a, _], [b, __]) => (a > b ? -1 : 1))
-              .map(renderDate)
-              .join("");
+        return videos.size === 0 ? "<h1>No Videos recorded</h1>" : [...videos.entries()].map(renderDate).join("");
       }
 
-      const API = {
-        deleteVideos: (videos) =>
-          fetch("api/videos/delete", {
-            method: "POST",
-            body: JSON.stringify(videos),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((res) => res.json())
-            .then((data) => {
-              console.log(data);
-              window.location.reload();
-            })
-            .catch((e) => {
-              console.log("Error deleting videos ", e);
-            }),
+      function getContainer(container) {
+        const el = container.closest(".collapse-container");
+        return [el.dataset["idDate"], el.dataset["idCamera"]];
+      }
 
-        fetchVideos: () =>
-          fetch("api/videos", {
-            headers: { pragma: "no-cache", "cache-control": "no-cache" },
-          })
-            .then((response) => response.json())
-            .then((videos) => videos.map((file) => getTimeFromFilename(file)))
-            .then((videos) =>
-              videos.reduce((acc, { camera: cam, time: timeStr, file }, idx) => {
-                if (cam && timeStr && file) {
-                  const time = new Date(timeStr);
-                  const day = new Date(timeStr).setHours(0, 0, 0, 0);
-                  const hr = time.getHours();
-
-                  acc[day] == null && (acc[day] = {});
-                  acc[day][cam] == null && (acc[day][cam] = {});
-                  acc[day][cam][hr] == null && (acc[day][cam][hr] = []);
-
-                  acc[day][cam][hr].push({ time, file });
-                }
-                return acc;
-              }, {})
-            ),
-      };
+      function findOpen() {
+        const dateEl = document.querySelector('.videos .day-container[data-collapsed="false"]');
+        const camEl = dateEl && dateEl.querySelector('.day-videos-list-container .camera-container[data-collapsed="false"]');
+        return [dateEl && parseInt(dateEl.dataset.idDate, 10), camEl && camEl.dataset.idCamera];
+      }
 
       document.addEventListener("DOMContentLoaded", async () => {
-        const videos = await API.fetchVideos();
-        console.log(videos);
+        window.axe = videos = await API.fetchVideos();
+        console.log("Videos", videos);
         const videoContainer = document.getElementById("videoContainer");
         videoContainer.innerHTML = render(videos);
 
@@ -246,11 +222,6 @@
         videoContainer.addEventListener(
           "click",
           (e) => {
-            const getContainer = (container) => {
-              const el = container.closest(".collapse-container");
-              return [el.dataset["idDate"], el.dataset["idCamera"]];
-            };
-
             const action = e.target.dataset.action;
             switch (e.target.dataset.action) {
               case "toggleCollapse": {
@@ -269,21 +240,16 @@
         document.addEventListener(
           "keyup",
           (e) => {
-            function findOpen() {
-              const dateEl = document.querySelector('.videos .day-container[data-collapsed="false"]');
-              const camEl = dateEl && dateEl.querySelector('.day-videos-list-container .camera-container[data-collapsed="false"]');
-              return [dateEl && dateEl.dataset.idDate, camEl && camEl.dataset.idCamera];
-            }
-
             switch (e.key) {
               case "ArrowLeft":
                 toggleCollapse(...findOpen(), true);
                 break;
               case "Enter":
-                const [date, cam] = findOpen();
-                if (date && cam && videos[date][cam] && videos[date][cam]) {
-                  const hour = videos[date][cam];
-                  window.location = `./video.html#${videos[date][cam][Object.keys(hour)[0]][0].file}`;
+                const [date, camera] = findOpen();
+                if (date && camera && videos.get(date)?.get(camera)) {
+                  const hour = videos.get(date)?.get(camera)?.keys().next().value;
+                  const { cam, time, file } = videos.get(date)?.get(camera)?.get(hour)[0];
+                  window.location = "video.html#" + getVideoPageHash(time, cam, file);
                 }
                 break;
               case "D":
@@ -294,10 +260,11 @@
           false
         );
 
-        // Open first element by default
-        const firstDate = Object.keys(videos)[Object.keys(videos).length - 1];
-        if (firstDate) {
-          toggleCollapse(firstDate, Object.keys(videos[firstDate])[0]);
+        // Open the previously opened element
+        const toggleOpen = window.localStorage.getItem("toggleOpen");
+        if (toggleOpen) {
+          const [date, cam] = toggleOpen.split(",");
+          toggleCollapse(date, cam, false);
         }
       });
     </script>
