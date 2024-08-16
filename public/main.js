@@ -59,6 +59,6 @@ const API = {
                   )])
                 .sort() // sort key is camera
             )])
-          .sort() // sort key is day
+          .sort((a, b) => a - b) // sort key is day
       ))
 };
