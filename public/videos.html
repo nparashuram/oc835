@@ -265,6 +265,12 @@
         if (toggleOpen) {
           const [date, cam] = toggleOpen.split(",");
           toggleCollapse(date, cam, false);
+        } else {
+          const date = videos.keys().next().value;
+          if (date) {
+            const cam = videos.get(date).keys().next().value;
+            toggleCollapse(date, cam, false);
+          }
         }
       });
     </script>
