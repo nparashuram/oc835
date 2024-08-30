@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -212,6 +212,24 @@
         return [dateEl && parseInt(dateEl.dataset.idDate, 10), camEl && camEl.dataset.idCamera];
       }
 
+      function expandDateAndCam() {
+        // Open the previously opened element, or first element
+        var date = null,
+          cam = null;
+        const toggleOpen = window.localStorage.getItem("toggleOpen");
+        if (toggleOpen) {
+          [date, cam] = toggleOpen.split(",");
+          date = parseFloat(date);
+        }
+        if (!date || !videos.has(date)) {
+          date = videos.keys().next().value;
+        }
+        if (!cam || !videos.get(date).has(cam)) {
+          cam = videos.get(date).keys().next().value;
+        }
+        toggleCollapse(date, cam, false);
+      }
+
       document.addEventListener("DOMContentLoaded", async () => {
         window.axe = videos = await API.fetchVideos();
         console.log("Videos", videos);
@@ -260,18 +278,7 @@
           false
         );
 
-        // Open the previously opened element
-        const toggleOpen = window.localStorage.getItem("toggleOpen");
-        if (toggleOpen) {
-          const [date, cam] = toggleOpen.split(",");
-          toggleCollapse(date, cam, false);
-        } else {
-          const date = videos.keys().next().value;
-          if (date) {
-            const cam = videos.get(date).keys().next().value;
-            toggleCollapse(date, cam, false);
-          }
-        }
+        expandDateAndCam();
       });
     </script>
   </body>
