@@ -1,177 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="MSSmartTagsPreventParsing" content="true" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="apple-touch-icon" href="/favicon.ico" />
-    <link rel="image/vnd.microsoft.icon" rel="icon" href="/favicon.ico" />
-    <link rel="me" href="http://nparashuram.com" />
-    <link rel="canonical" href="http://nparashuram.com" />
-    <meta name="theme-color" content="#fff" />
-    <link href="main.css" rel="stylesheet" />
-    <style>
-      .collapse-container {
-        user-select: none;
-        width: 100%;
-      }
 
-      .videos h3.camera-name {
-        margin-bottom: 0;
-        padding: 15px 10px;
-        background-color: #abcdef;
-        display: inline-block;
-        cursor: pointer;
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="MSSmartTagsPreventParsing" content="true" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="apple-touch-icon" href="/favicon.ico" />
+  <link rel="image/vnd.microsoft.icon" rel="icon" href="/favicon.ico" />
+  <link rel="me" href="http://nparashuram.com" />
+  <link rel="canonical" href="http://nparashuram.com" />
+  <meta name="theme-color" content="#fff" />
+  <link href="main.css" rel="stylesheet" />
+  <style>
+    .collapse-container {
+      user-select: none;
+      width: 100%;
+    }
 
-      .videos .camera-video-container {
-        margin: 0 0 10px 0;
-        flex-wrap: wrap;
-        flex-direction: column;
-        background-color: #abcdef;
-        display: flex;
-        justify-content: flex-start;
-        padding: 6px 0 6px 6px;
-      }
+    .videos h3.camera-name {
+      margin-bottom: 0;
+      padding: 15px 10px;
+      background-color: #abcdef;
+      display: inline-block;
+      cursor: pointer;
+    }
 
-      .videos .camera-container-collapse-button {
-        display: inline-block;
-        cursor: pointer;
-      }
+    .videos .camera-video-container {
+      margin: 0 0 10px 0;
+      flex-wrap: wrap;
+      flex-direction: column;
+      background-color: #abcdef;
+      display: flex;
+      justify-content: flex-start;
+      padding: 6px 0 6px 6px;
+    }
 
-      .videos .day-container-collapse-button {
-        display: inline-block;
-        font-size: 1.5em;
-        cursor: pointer;
-      }
+    .videos .camera-container-collapse-button {
+      display: inline-block;
+      cursor: pointer;
+    }
 
-      .videos .day-videos-title {
-        display: inline-block;
-        cursor: pointer;
-      }
+    .videos .day-container-collapse-button {
+      display: inline-block;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
 
-      .videos .collapse-content {
-        overflow: hidden;
-        /* transition: max-height 0.5s ease-in-out; */
-      }
+    .videos .day-videos-title {
+      display: inline-block;
+      cursor: pointer;
+    }
 
-      .videos .hour-container {
-        margin: 10px 0;
-        flex-wrap: wrap;
-        flex-direction: row;
-      }
+    .videos .collapse-content {
+      overflow: hidden;
+      /* transition: max-height 0.5s ease-in-out; */
+    }
 
-      .videos div.video-item {
-        padding: 0;
-        margin: 3px 3px;
-        list-style: none;
-        border: SOLID 1px #222;
-        background-color: #eee;
-        border-radius: 4px;
-        cursor: pointer;
-        display: inline-block;
-        position: relative;
-      }
+    .videos .hour-container {
+      margin: 10px 0;
+      flex-wrap: wrap;
+      flex-direction: row;
+    }
 
-      .videos div.video-item-synced {
-        position: absolute;
-        top: -0.5em;
-        right: -0.5em;
-        font-size: 1.5em;
-      }
+    .videos div.video-item {
+      padding: 0;
+      margin: 3px 3px;
+      list-style: none;
+      border: SOLID 1px #222;
+      background-color: #eee;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+      position: relative;
+    }
 
-      .videos div.video-item-deleted {
-        border-style: dotted;
-        opacity: 0.5;
-      }
+    .videos div.video-item-synced {
+      position: absolute;
+      top: -0.5em;
+      right: -0.5em;
+      font-size: 1.5em;
+    }
 
-      .videos .videoItem a:hover {
-        background-color: #333;
-        color: #ccc;
-      }
+    .videos div.video-item-deleted {
+      border-style: dotted;
+      opacity: 0.5;
+    }
 
-      .videos .video-item a {
-        font-family: "Courier New", Courier, monospace;
-        font-size: 1.2em;
-        font-weight: 800;
-        text-decoration: none;
-        display: block;
-        padding: 10px;
-      }
+    .videos .videoItem a:hover {
+      background-color: #333;
+      color: #ccc;
+    }
 
-      .videos .delete-cam-date {
-        display: inline;
-        font-size: 1em;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-top: 35px;
-        float: right;
-      }
-    </style>
-    <title>OC835 - Cameras</title>
-  </head>
+    .videos .video-item a {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.2em;
+      font-weight: 800;
+      text-decoration: none;
+      display: block;
+      padding: 10px;
+    }
 
-  <body>
-    <div id="videoContainer" class="root videos">
-      <div class="lds-ripple">
-        <div></div>
-        <div></div>
-      </div>
+    .videos .delete-cam-date {
+      display: inline;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 35px;
+      float: right;
+    }
+  </style>
+  <title>OC835 - Cameras</title>
+</head>
+
+<body>
+  <div id="videoContainer" class="root videos">
+    <div class="lds-ripple">
+      <div></div>
+      <div></div>
     </div>
-    <script type="text/javascript" src="main.js"></script>
-    <script type="text/javascript"></script>
+  </div>
+  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript"></script>
 
-    <script type="text/javascript">
-      var videos = null;
+  <script type="text/javascript">
+    var videos = null;
 
-      const toggleCollapse = (date, cam, val) => {
-        const toggle = (el, shouldClose) => {
-          if (!el) {
-            return;
-          }
-          const val = typeof shouldClose === "undefined" ? el.dataset.collapsed !== "true" : shouldClose;
-          el.dataset.collapsed = val;
-          el.setAttribute("data-collapsed", val);
-          el.querySelector(".collapse-content").style["max-height"] = val ? "0px" : "100000px";
-          el.querySelector(".collapse-button").innerHTML = val ? "➕" : "➖";
-        };
-
-        const dateCollapseContainer = document.querySelector(`.videos .collapse-container[data-id-date="${date}"]`);
-        if (dateCollapseContainer && cam) {
-          toggle(dateCollapseContainer, false);
-          const camCollapseContainer = dateCollapseContainer.querySelector(`.camera-container[data-id-camera='${cam}']`);
-          toggle(camCollapseContainer, val);
-          window.localStorage.setItem("toggleOpen", [date, cam]);
-        } else {
-          const dates = document
-            .querySelectorAll(`.videos .collapse-container[data-collapsed="false"]:not([data-id-date="${date}"])`)
-            .forEach((el) => toggle(el, true));
-          toggle(dateCollapseContainer, val);
+    const toggleCollapse = (date, cam, val) => {
+      const toggle = (el, shouldClose) => {
+        if (!el) {
+          return;
         }
+        const val = typeof shouldClose === "undefined" ? el.dataset.collapsed !== "true" : shouldClose;
+        el.dataset.collapsed = val;
+        el.setAttribute("data-collapsed", val);
+        el.querySelector(".collapse-content").style["max-height"] = val ? "0px" : "100000px";
+        el.querySelector(".collapse-button").innerHTML = val ? "➕" : "➖";
       };
 
-      const getVideoList = (date, camera, videos) =>
-        date && camera && [...videos.get(parseInt(date, 10)).get(camera).values()].flat().map((v) => v.file);
+      const dateCollapseContainer = document.querySelector(`.videos .collapse-container[data-id-date="${date}"]`);
+      if (dateCollapseContainer && cam) {
+        toggle(dateCollapseContainer, false);
+        const camCollapseContainer = dateCollapseContainer.querySelector(`.camera-container[data-id-camera='${cam}']`);
+        toggle(camCollapseContainer, val);
+        window.localStorage.setItem("toggleOpen", [date, cam]);
+      } else {
+        const dates = document
+          .querySelectorAll(`.videos .collapse-container[data-collapsed="false"]:not([data-id-date="${date}"])`)
+          .forEach((el) => toggle(el, true));
+        toggle(dateCollapseContainer, val);
+      }
+    };
 
-      function render(videos) {
-        const renderHours = ([_, hours]) =>
-          `
+    const getVideoList = (date, camera, videos) =>
+      date && camera && [...videos.get(parseInt(date, 10)).get(camera).values()].flat().map((v) => v.file);
+
+    function render(videos) {
+      const renderHours = ([_, hours]) =>
+        `
               <div class = "hour-container">
                 ${hours
-                  .map(
-                    ({ file, time, is_synced, is_deleted, cam }) => `
+          .map(
+            ({ file, time, is_synced, is_deleted, cam }) => `
                     <div class="video-item ${is_deleted ? "video-item-deleted" : ""}">
                       <a href="video.html#${getVideoPageHash(time, cam, file)}">${getFormattedTime(time)}</a>
                       ${is_synced ? "<div class='video-item-synced'>🗳️</div>" : ""}
                     </div>`
-                  )
-                  .join("")}
+          )
+          .join("")}
               </div>`;
 
-        const renderCamForDate =
-          (date) =>
+      const renderCamForDate =
+        (date) =>
           ([camera, hours]) =>
             `
               <div class="camera-container collapse-container" data-id-date="${date}" data-id-camera="${camera}" data-collapsed="true">
@@ -186,7 +187,7 @@
               </div>
               `;
 
-        const renderDate = ([date, cameras]) => `
+      const renderDate = ([date, cameras]) => `
               <div class="day-container collapse-container" data-id-date="${date}" data-collapsed="true">
                   <div class="day-container-collapse-button collapse-button" data-action='toggleCollapse'>➕</div>
                   <h2 class="day-videos-title" data-action='toggleCollapse'>
@@ -198,88 +199,89 @@
               </div>
             `;
 
-        return videos.size === 0 ? "<h1>No Videos recorded</h1>" : [...videos.entries()].map(renderDate).join("");
+      return videos.size === 0 ? "<h1>No Videos recorded</h1>" : [...videos.entries()].map(renderDate).join("");
+    }
+
+    function getContainer(container) {
+      const el = container.closest(".collapse-container");
+      return [el.dataset["idDate"], el.dataset["idCamera"]];
+    }
+
+    function findOpen() {
+      const dateEl = document.querySelector('.videos .day-container[data-collapsed="false"]');
+      const camEl = dateEl && dateEl.querySelector('.day-videos-list-container .camera-container[data-collapsed="false"]');
+      return [dateEl && parseInt(dateEl.dataset.idDate, 10), camEl && camEl.dataset.idCamera];
+    }
+
+    function expandDateAndCam() {
+      // Open the previously opened element, or first element
+      var date = null,
+        cam = null;
+      const toggleOpen = window.localStorage.getItem("toggleOpen");
+      if (toggleOpen) {
+        [date, cam] = toggleOpen.split(",");
+        date = parseFloat(date);
       }
-
-      function getContainer(container) {
-        const el = container.closest(".collapse-container");
-        return [el.dataset["idDate"], el.dataset["idCamera"]];
+      if (!date || !videos.has(date)) {
+        date = videos.keys().next().value;
       }
-
-      function findOpen() {
-        const dateEl = document.querySelector('.videos .day-container[data-collapsed="false"]');
-        const camEl = dateEl && dateEl.querySelector('.day-videos-list-container .camera-container[data-collapsed="false"]');
-        return [dateEl && parseInt(dateEl.dataset.idDate, 10), camEl && camEl.dataset.idCamera];
+      if (!cam || !videos.get(date).has(cam)) {
+        cam = videos.get(date).keys().next().value;
       }
+      toggleCollapse(date, cam, false);
+    }
 
-      function expandDateAndCam() {
-        // Open the previously opened element, or first element
-        var date = null,
-          cam = null;
-        const toggleOpen = window.localStorage.getItem("toggleOpen");
-        if (toggleOpen) {
-          [date, cam] = toggleOpen.split(",");
-          date = parseFloat(date);
-        }
-        if (!date || !videos.has(date)) {
-          date = videos.keys().next().value;
-        }
-        if (!cam || !videos.get(date).has(cam)) {
-          cam = videos.get(date).keys().next().value;
-        }
-        toggleCollapse(date, cam, false);
-      }
+    document.addEventListener("DOMContentLoaded", async () => {
+      window.axe = videos = await API.fetchVideos();
+      console.log("Videos", videos);
+      const videoContainer = document.getElementById("videoContainer");
+      videoContainer.innerHTML = render(videos);
 
-      document.addEventListener("DOMContentLoaded", async () => {
-        window.axe = videos = await API.fetchVideos();
-        console.log("Videos", videos);
-        const videoContainer = document.getElementById("videoContainer");
-        videoContainer.innerHTML = render(videos);
-
-        // Mouse interactivity
-        videoContainer.addEventListener(
-          "click",
-          (e) => {
-            const action = e.target.dataset.action;
-            switch (e.target.dataset.action) {
-              case "toggleCollapse": {
-                toggleCollapse(...getContainer(e.target));
-                break;
-              }
-              case "deleteVideos": {
-                API.deleteVideos(getVideoList(...getContainer(e.target), videos));
-                break;
-              }
+      // Mouse interactivity
+      videoContainer.addEventListener(
+        "click",
+        (e) => {
+          const action = e.target.dataset.action;
+          switch (e.target.dataset.action) {
+            case "toggleCollapse": {
+              toggleCollapse(...getContainer(e.target));
+              break;
             }
-          },
-          false
-        );
-
-        document.addEventListener(
-          "keyup",
-          (e) => {
-            switch (e.key) {
-              case "ArrowLeft":
-                toggleCollapse(...findOpen(), true);
-                break;
-              case "Enter":
-                const [date, camera] = findOpen();
-                if (date && camera && videos.get(date)?.get(camera)) {
-                  const hour = videos.get(date)?.get(camera)?.keys().next().value;
-                  const { cam, time, file } = videos.get(date)?.get(camera)?.get(hour)[0];
-                  window.location = "video.html#" + getVideoPageHash(time, cam, file);
-                }
-                break;
-              case "D":
-                API.deleteVideos(getVideoList(...findOpen(), videos));
-                break;
+            case "deleteVideos": {
+              API.deleteVideos(getVideoList(...getContainer(e.target), videos));
+              break;
             }
-          },
-          false
-        );
+          }
+        },
+        false
+      );
 
-        expandDateAndCam();
-      });
-    </script>
-  </body>
+      document.addEventListener(
+        "keyup",
+        (e) => {
+          switch (e.key) {
+            case "ArrowLeft":
+              toggleCollapse(...findOpen(), true);
+              break;
+            case "Enter":
+              const [date, camera] = findOpen();
+              if (date && camera && videos.get(date)?.get(camera)) {
+                const hour = videos.get(date)?.get(camera)?.keys().next().value;
+                const { cam, time, file } = videos.get(date)?.get(camera)?.get(hour)[0];
+                window.location = "video.html#" + getVideoPageHash(time, cam, file);
+              }
+              break;
+            case "D":
+              API.deleteVideos(getVideoList(...findOpen(), videos));
+              break;
+          }
+        },
+        false
+      );
+
+      expandDateAndCam();
+    });
+  </script>
+</body>
+
 </html>
